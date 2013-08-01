@@ -28,8 +28,7 @@ Meteor.startup(function () {
   }
 
   function randomVoyage () {
-    // TODO: Stat the dir so we can add more voyages without editing the code
-    return JSON.parse(fs.readFileSync("server/voyage/"+Math.floor(Math.random()*5)+".json"))
+    return Voyages[Math.floor(Math.random()*Voyages.length)]
   }
 
   function continueVoyage () {
