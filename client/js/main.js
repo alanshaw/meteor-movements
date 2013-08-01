@@ -10,7 +10,7 @@ Meteor.startup(function () {
 
   var positions = Positions.findByTimestampAsc()
     , marker = null
-    , ships = ["container", "ferry", "fishing"]
+    , ships = ["aircraft", "container", "container2", "ferry", "fishing", "power", "power2", "rescue", "sail", "speed"]
 
   positions.observe({
     added: function (pos) {
@@ -18,7 +18,7 @@ Meteor.startup(function () {
       var latlng = [pos.latitude, pos.longitude]
 
       if (!marker) {
-        var icon = L.icon({iconUrl: "img/icon-ship-"+ships[Math.floor(Math.random()*ships.length)]+".png", iconSize: [60, 60], iconAnchor: [30, 30]})
+        var icon = L.icon({iconUrl: "img/icon-ship-"+ships[Math.floor(Math.random()*ships.length)]+".svg", iconSize: [60, 60], iconAnchor: [30, 30]})
         marker = L.marker(latlng, {icon: icon, iconAngle: pos.heading}).addTo(map)
       }
 
