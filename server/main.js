@@ -1,5 +1,3 @@
-var fs = Npm.require("fs")
-
 Meteor.startup(function () {
 
   Meteor.publish("positions", function () {

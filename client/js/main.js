@@ -1,5 +1,7 @@
 Meteor.startup(function () {
 
+  $("#map").height($(window).height() - 18)
+
   var map = L.map('map').setView([51.505, -0.09], 5)
 
   new L.StamenTileLayer("watercolor").addTo(map)
@@ -16,10 +18,8 @@ Meteor.startup(function () {
       var latlng = [pos.latitude, pos.longitude]
 
       if (!marker) {
-
         var icon = L.icon({iconUrl: "img/icon-ship-"+ships[Math.floor(Math.random()*ships.length)]+".png", iconSize: [60, 60], iconAnchor: [30, 30]})
-
-        return marker = L.marker(latlng, {icon: icon, iconAngle: pos.heading}).addTo(map)
+        marker = L.marker(latlng, {icon: icon, iconAngle: pos.heading}).addTo(map)
       }
 
       // Move marker to new position
@@ -32,8 +32,10 @@ Meteor.startup(function () {
     },
     // When start a new voyage, remove marker so we get a new ship graphic
     removed: function () {
-      map.removeLayer(marker)
-      marker = null
+      if (Positions.findByTimestampAsc().count() == 0) {
+        map.removeLayer(marker)
+        marker = null
+      }
     }
   })
 
