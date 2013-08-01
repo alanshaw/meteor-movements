@@ -6,7 +6,7 @@ body {
   border: 1px solid #000;
   height: 600px;
 }
-.leaflet-marker-pane img, .leaflet-shadow-pane img {
+.leaflet-marker-icon {
   -webkit-transition: -webkit-transform 0.5s ease-out;
   transition: transform 0.5s ease-out;
 }
