@@ -4,36 +4,29 @@ Meteor.startup(function () {
     return Positions.find()
   })
 
-  var voyageData = null // The current data being looped through
-    , voyageNextPosition = null // The current position that has been inserted into the collection
-
-  function updatePositions () {
-
+  // Add to the positions collection every 2-8 seconds
+  !function scheduleContinueVoyage () {
     Meteor.setTimeout(function () {
-
-      // Run out of positions - start new voyage
-      if (!voyageData || voyageNextPosition == voyageData.length) {
-        Positions.remove({})
-
-        voyageData = randomVoyage()
-        voyageNextPosition = 0
-      }
-
       continueVoyage()
-      updatePositions()
-
+      scheduleContinueVoyage()
     }, 2000 + Math.floor(Math.random()*8000))
-  }
+  }()
 
-  function randomVoyage () {
-    return Voyages[Math.floor(Math.random()*Voyages.length)]
-  }
+  var voyageData = null // The current data being looped through
+    , voyageNextPosition = null // The index of the next position to be inserted
 
   function continueVoyage () {
-    var pos = voyageData[voyageNextPosition]
-    Positions.insert(pos)
+    // Run out of positions - start new voyage
+    if (!voyageData || voyageNextPosition == voyageData.length) {
+      Positions.remove({})
+
+      var next = Voyages.indexOf(voyageData) + 1
+
+      voyageData = Voyages[next == Voyages.length ? 0 : next]
+      voyageNextPosition = 0
+    }
+
+    Positions.insert(voyageData[voyageNextPosition])
     voyageNextPosition++
   }
-
-  updatePositions()
 })

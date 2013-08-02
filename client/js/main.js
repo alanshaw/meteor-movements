@@ -8,19 +8,18 @@ Meteor.startup(function () {
 
   Meteor.subscribe("positions")
 
+  function markerIcon () {
+    var ships = ["aircraft", "container", "container2", "ferry", "fishing", "power", "power2", "rescue", "sail", "speed"]
+    return L.icon({iconUrl: "img/icon-ship-"+ships[Math.floor(Math.random()*ships.length)]+".svg", iconSize: [60, 60], iconAnchor: [30, 30]})
+  }
+
   var positions = Positions.findByTimestampAsc()
-    , marker = null
-    , ships = ["aircraft", "container", "container2", "ferry", "fishing", "power", "power2", "rescue", "sail", "speed"]
+    , marker = L.marker([0, 0], {icon: markerIcon(), iconAngle: 0}).addTo(map)
 
   positions.observe({
     added: function (pos) {
 
       var latlng = [pos.latitude, pos.longitude]
-
-      if (!marker) {
-        var icon = L.icon({iconUrl: "img/icon-ship-"+ships[Math.floor(Math.random()*ships.length)]+".svg", iconSize: [60, 60], iconAnchor: [30, 30]})
-        marker = L.marker(latlng, {icon: icon, iconAngle: pos.heading}).addTo(map)
-      }
 
       // Move marker to new position
       marker.setLatLng(latlng).setIconAngle(pos.heading)
@@ -30,12 +29,9 @@ Meteor.startup(function () {
 
       Meteor.setTimeout(drawTracks, 500)
     },
-    // When start a new voyage, remove marker so we get a new ship graphic
-    removed: function () {
-      if (Positions.findByTimestampAsc().count() == 0) {
-        map.removeLayer(marker)
-        marker = null
-      }
+    // When start a new voyage, change marker icon to new ship graphic
+    removed: function() {
+      marker.setIcon(markerIcon())
     }
   })
 
